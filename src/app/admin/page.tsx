@@ -118,8 +118,8 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<AdminTab>("analytics");
   const [flags, setFlags] = useState(INITIAL_FLAGS);
 
-  async function handleLogout() {
-    await logOut();
+  function handleLogout() {
+    logOut();
     router.push("/login");
   }
 
@@ -152,7 +152,7 @@ export default function AdminPage() {
           }}
         >
           <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-success)" }} />
-          AUTH OK — {user?.email}
+          AUTH OK — {user?.username}
         </div>
         <div className="ml-auto flex items-center gap-2">
           <GlowButton

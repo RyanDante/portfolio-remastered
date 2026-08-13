@@ -7,64 +7,80 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
-  type User,
-} from "firebase/auth";
-import { auth, isFirebaseConfigured } from "@/lib/firebase";
+
+// ── Credentials ─────────────────────────────────────────────────────────────
+// These are intentionally client-side only — this is a personal portfolio
+// admin panel with no sensitive data, not a production multi-user system.
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "admin";
+const SESSION_KEY = "rd_admin_session";
+
+// ── Types ────────────────────────────────────────────────────────────────────
+
+interface AdminUser {
+  username: string;
+}
 
 interface AuthContextValue {
-  user: User | null;
+  user: AdminUser | null;
   loading: boolean;
-  configured: boolean;
-  signInEmail: (email: string, password: string) => Promise<void>;
-  signInGoogle: () => Promise<void>;
-  logOut: () => Promise<void>;
+  signIn: (username: string, password: string) => Promise<void>;
+  logOut: () => void;
 }
+
+// ── Context ──────────────────────────────────────────────────────────────────
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const configured = isFirebaseConfigured();
 
+  // Restore session from sessionStorage on mount (cleared on browser close)
   useEffect(() => {
-    if (!auth) {
+    try {
+      const saved = sessionStorage.getItem(SESSION_KEY);
+      if (saved) {
+        setUser(JSON.parse(saved) as AdminUser);
+      }
+    } catch {
+      // sessionStorage unavailable (SSR guard)
+    } finally {
       setLoading(false);
-      return;
     }
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      setUser(firebaseUser);
-      setLoading(false);
-    });
-    return unsubscribe;
   }, []);
 
-  async function signInEmail(email: string, password: string) {
-    if (!auth) throw new Error("Firebase not configured");
-    await signInWithEmailAndPassword(auth, email, password);
+  async function signIn(username: string, password: string): Promise<void> {
+    // Simulate async check to match async pattern used by login page
+    await new Promise((r) => setTimeout(r, 600));
+
+    if (
+      username.trim().toLowerCase() !== ADMIN_USERNAME ||
+      password !== ADMIN_PASSWORD
+    ) {
+      throw new Error("Invalid username or password.");
+    }
+
+    const admin: AdminUser = { username: ADMIN_USERNAME };
+    try {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(admin));
+    } catch {
+      // ignore write failures
+    }
+    setUser(admin);
   }
 
-  async function signInGoogle() {
-    if (!auth) throw new Error("Firebase not configured");
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
-  }
-
-  async function logOut() {
-    if (!auth) return;
-    await signOut(auth);
+  function logOut() {
+    try {
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch {
+      // ignore
+    }
+    setUser(null);
   }
 
   return (
-    <AuthContext.Provider
-      value={{ user, loading, configured, signInEmail, signInGoogle, logOut }}
-    >
+    <AuthContext.Provider value={{ user, loading, signIn, logOut }}>
       {children}
     </AuthContext.Provider>
   );

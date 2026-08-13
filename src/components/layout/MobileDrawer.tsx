@@ -16,7 +16,7 @@ interface MobileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   navLinks: NavLinkItem[];
-  activeId: string;
+  activeId: string | null;
   onOpenResume: () => void;
 }
 

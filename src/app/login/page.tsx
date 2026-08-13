@@ -3,44 +3,29 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { LogIn, Globe, AlertCircle, Lock } from "lucide-react";
+import { LogIn, AlertCircle, Lock, User } from "lucide-react";
 import GlowButton from "@/components/ui/GlowButton";
 import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
-  const { signInEmail, signInGoogle, configured } = useAuth();
+  const { signIn } = useAuth();
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleEmailLogin(e: FormEvent) {
+  async function handleLogin(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
     try {
-      await signInEmail(email, password);
+      await signIn(username, password);
       router.push("/admin");
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message.replace("Firebase: ", "").replace(/ \(auth\/.*\)/, "")
-          : "Authentication failed"
+        err instanceof Error ? err.message : "Authentication failed"
       );
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleGoogleLogin() {
-    setLoading(true);
-    setError(null);
-    try {
-      await signInGoogle();
-      router.push("/admin");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Google sign-in failed");
     } finally {
       setLoading(false);
     }
@@ -86,7 +71,7 @@ export default function LoginPage() {
             className="font-mono text-[10px] tracking-widest mb-2"
             style={{ color: "var(--color-cyan)" }}
           >
-            // SECURE_AUTH_GATEWAY v2.0
+            // SECURE_AUTH_GATEWAY v3.0
           </p>
           <h1 className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>
             Admin Control Center
@@ -101,7 +86,7 @@ export default function LoginPage() {
           className="glass rounded-xl overflow-hidden"
           style={{ boxShadow: "var(--shadow-glow-sm)" }}
         >
-          {/* Terminal header */}
+          {/* macOS-style window bar */}
           <div
             className="flex items-center gap-2 px-4 py-2.5"
             style={{ borderBottom: "1px solid var(--color-border)" }}
@@ -115,51 +100,39 @@ export default function LoginPage() {
           </div>
 
           <div className="p-6">
-            {!configured && (
-              <div
-                className="mb-4 p-3 rounded text-xs font-mono"
-                style={{
-                  color: "var(--color-warn)",
-                  backgroundColor: "rgba(255,184,0,0.06)",
-                  border: "1px solid rgba(255,184,0,0.2)",
-                }}
-              >
-                ⚠ Firebase not configured — auth is disabled.
-                <br />
-                Add credentials to .env.local to enable login.
-              </div>
-            )}
-
-            <form onSubmit={handleEmailLogin} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-4" noValidate>
+              {/* Username */}
               <div>
                 <label
-                  htmlFor="login-email"
-                  className="block font-mono text-[10px] tracking-widest mb-1.5"
+                  htmlFor="login-username"
+                  className="block font-mono text-[10px] tracking-widest mb-1.5 flex items-center gap-1.5"
                   style={{ color: "var(--color-cyan)" }}
                 >
-                  EMAIL
+                  <User size={11} /> USERNAME
                 </label>
                 <input
-                  id="login-email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@portfolio.dev"
+                  id="login-username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="admin"
                   required
-                  disabled={!configured || loading}
+                  autoComplete="username"
+                  disabled={loading}
                   style={inputStyle}
                   onFocus={(e) => (e.currentTarget.style.borderColor = "var(--color-cyan)")}
                   onBlur={(e) => (e.currentTarget.style.borderColor = "var(--color-border)")}
                 />
               </div>
 
+              {/* Password */}
               <div>
                 <label
                   htmlFor="login-password"
-                  className="block font-mono text-[10px] tracking-widest mb-1.5"
+                  className="block font-mono text-[10px] tracking-widest mb-1.5 flex items-center gap-1.5"
                   style={{ color: "var(--color-cyan)" }}
                 >
-                  PASSWORD
+                  <Lock size={11} /> PASSWORD
                 </label>
                 <input
                   id="login-password"
@@ -168,15 +141,19 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••••••"
                   required
-                  disabled={!configured || loading}
+                  autoComplete="current-password"
+                  disabled={loading}
                   style={inputStyle}
                   onFocus={(e) => (e.currentTarget.style.borderColor = "var(--color-cyan)")}
                   onBlur={(e) => (e.currentTarget.style.borderColor = "var(--color-border)")}
                 />
               </div>
 
+              {/* Error */}
               {error && (
-                <div
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
                   className="flex items-start gap-2 p-2.5 rounded text-xs"
                   style={{
                     color: "var(--color-error)",
@@ -186,7 +163,7 @@ export default function LoginPage() {
                 >
                   <AlertCircle size={12} className="shrink-0 mt-0.5" />
                   {error}
-                </div>
+                </motion.div>
               )}
 
               <GlowButton
@@ -194,38 +171,21 @@ export default function LoginPage() {
                 variant="primary"
                 size="md"
                 className="w-full justify-center"
-                disabled={!configured || loading}
+                disabled={loading}
                 icon={<LogIn size={14} />}
-                id="login-email-submit-btn"
+                id="login-submit-btn"
               >
                 {loading ? "Authenticating..." : "Sign In"}
               </GlowButton>
             </form>
-
-            <div className="my-4 flex items-center gap-3">
-              <div className="flex-1 h-px" style={{ backgroundColor: "var(--color-border)" }} />
-              <span className="font-mono text-[10px]" style={{ color: "var(--color-muted)" }}>
-                OR
-              </span>
-              <div className="flex-1 h-px" style={{ backgroundColor: "var(--color-border)" }} />
-            </div>
-
-            <GlowButton
-              variant="ghost"
-              size="md"
-              className="w-full justify-center"
-              onClick={handleGoogleLogin}
-              disabled={!configured || loading}
-              icon={<Globe size={14} />}
-              id="login-google-btn"
-            >
-              Continue with Google
-            </GlowButton>
           </div>
         </div>
 
         <p className="text-center font-mono text-[10px] mt-6" style={{ color: "var(--color-muted)" }}>
-          ← <a href="/" className="hover:opacity-80 transition-opacity" style={{ color: "var(--color-muted-light)" }}>Return to portfolio</a>
+          ←{" "}
+          <a href="/" className="hover:opacity-80 transition-opacity" style={{ color: "var(--color-muted-light)" }}>
+            Return to portfolio
+          </a>
         </p>
       </motion.div>
     </div>
