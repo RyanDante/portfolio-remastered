@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Wifi, ChevronRight, Terminal as TerminalIcon, Search, Globe } from "lucide-react";
+import { Menu, X, Wifi, Search, Globe, Terminal as TerminalIcon } from "lucide-react";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import GlowButton from "@/components/ui/GlowButton";
 import ResumeModal from "@/components/ui/ResumeModal";
+import MobileDrawer from "./MobileDrawer";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -123,7 +123,7 @@ export default function Navbar() {
           <div className="flex md:hidden items-center gap-2">
             <button
               onClick={() => window.dispatchEvent(new CustomEvent("toggle-command-palette"))}
-              className="p-1.5 rounded glass border border-[var(--color-cyan-glow)] text-[var(--color-cyan)]"
+              className="p-1.5 rounded glass border border-[var(--color-cyan-glow)] text-[var(--color-cyan)] cursor-pointer"
               title="Search"
             >
               <Search size={16} />
@@ -137,7 +137,7 @@ export default function Navbar() {
               Resume
             </GlowButton>
             <button
-              className="p-2 rounded glass border border-white/10 text-white"
+              className="p-2 rounded glass border border-white/10 text-white cursor-pointer"
               onClick={() => setMobileOpen((o) => !o)}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               id="mobile-menu-toggle-btn"
@@ -146,98 +146,16 @@ export default function Navbar() {
             </button>
           </div>
         </nav>
-
-        {/* Mobile Right-to-Left Off-Canvas Sliding Drawer (md:hidden) */}
-        <AnimatePresence>
-          {mobileOpen && (
-            <div className="md:hidden fixed inset-0 z-50">
-              {/* Dark Backdrop Overlay */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setMobileOpen(false)}
-                className="fixed inset-0 bg-black/80 backdrop-blur-sm"
-              />
-
-              {/* Right-to-Left Sliding Panel */}
-              <motion.aside
-                initial={{ x: "100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "100%" }}
-                transition={{ type: "spring", damping: 25, stiffness: 220 }}
-                className="fixed inset-y-0 right-0 w-80 max-w-[85vw] glass border-l border-white/10 p-6 flex flex-col justify-between z-10 shadow-2xl"
-                style={{ backgroundColor: "rgba(5, 5, 5, 0.96)" }}
-              >
-                <div>
-                  {/* Header */}
-                  <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
-                    <span className="font-mono font-bold text-sm text-[var(--color-cyan)] flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-cyan)] animate-pulse" />
-                      RD://NAVIGATION
-                    </span>
-                    <button
-                      onClick={() => setMobileOpen(false)}
-                      className="p-1.5 rounded glass text-[#888888] hover:text-white cursor-pointer"
-                      aria-label="Close menu"
-                    >
-                      <X size={18} />
-                    </button>
-                  </div>
-
-                  {/* Links list */}
-                  <nav className="flex flex-col gap-2.5">
-                    {NAV_LINKS.map((link) => {
-                      const isActive = activeId === link.href.slice(1);
-                      return (
-                        <Link
-                          key={link.href}
-                          href={link.href}
-                          className="px-4 py-3 rounded-xl font-mono text-sm flex items-center justify-between transition-all"
-                          style={{
-                            color: isActive ? "var(--color-cyan)" : "#E0E0E0",
-                            backgroundColor: isActive ? "var(--color-cyan-faint)" : "rgba(255,255,255,0.03)",
-                            border: isActive ? "1px solid var(--color-cyan-glow)" : "1px solid var(--color-border)",
-                          }}
-                          onClick={() => setMobileOpen(false)}
-                        >
-                          <span className="flex items-center gap-3">
-                            <span className="text-xs text-[#666]">{link.num}.</span>
-                            {link.label}
-                          </span>
-                          <ChevronRight size={14} className={isActive ? "text-[var(--color-cyan)]" : "text-[#666]"} />
-                        </Link>
-                      );
-                    })}
-                  </nav>
-                </div>
-
-                {/* Bottom Actions inside drawer */}
-                <div className="pt-6 border-t border-white/10 space-y-3 font-mono text-xs">
-                  <Link
-                    href="/links"
-                    onClick={() => setMobileOpen(false)}
-                    className="w-full py-2.5 rounded-xl glass border border-[var(--color-cyan-glow)] flex items-center justify-center gap-2 text-[var(--color-cyan)] font-bold"
-                  >
-                    <Globe size={14} /> Open Bio Hub (/links)
-                  </Link>
-                  <GlowButton
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setMobileOpen(false);
-                      setResumeOpen(true);
-                    }}
-                    className="w-full justify-center text-xs py-2.5"
-                  >
-                    Download Resume PDF
-                  </GlowButton>
-                </div>
-              </motion.aside>
-            </div>
-          )}
-        </AnimatePresence>
       </header>
+
+      {/* Mobile Off-Canvas Drawer */}
+      <MobileDrawer
+        isOpen={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        navLinks={NAV_LINKS}
+        activeId={activeId}
+        onOpenResume={() => setResumeOpen(true)}
+      />
 
       {/* ── 2. TABLET LEFT SIDEBAR NAVIGATION (md:flex lg:hidden) ─────────── */}
       <aside
@@ -249,7 +167,6 @@ export default function Navbar() {
         }}
       >
         <div>
-          {/* Tablet Logo Header */}
           <Link
             href="#home"
             className="flex items-center gap-2 font-mono font-extrabold text-sm tracking-widest mb-8"
@@ -259,7 +176,6 @@ export default function Navbar() {
             RD://SYSTEMS
           </Link>
 
-          {/* Online Pill */}
           <div
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded font-mono text-[10px] tracking-widest font-bold mb-8"
             style={{
@@ -272,7 +188,6 @@ export default function Navbar() {
             ONLINE NODE
           </div>
 
-          {/* Vertical Menu Links */}
           <nav className="flex flex-col gap-2">
             <span className="font-mono text-[10px] uppercase tracking-widest text-[#666] mb-1">
               // NAV_GATEWAY
@@ -301,7 +216,6 @@ export default function Navbar() {
           </nav>
         </div>
 
-        {/* Tablet Footer Actions */}
         <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
           <GlowButton
             variant="outline"

@@ -107,37 +107,8 @@ const CHART_COLORS = {
   accent2: "#7b61ff",
 };
 
-// ── Stat Card ──────────────────────────────────────────────────────────────
-
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  sub,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string;
-  sub?: string;
-}) {
-  return (
-    <div
-      className="glass rounded-lg p-4 flex flex-col gap-2"
-      style={{ border: "1px solid var(--color-border)" }}
-    >
-      <div className="flex items-center gap-2">
-        <Icon size={14} style={{ color: "var(--color-cyan)" }} />
-        <span className="font-mono text-[10px] tracking-widest" style={{ color: "var(--color-muted)" }}>
-          {label}
-        </span>
-      </div>
-      <span className="text-2xl font-bold font-mono" style={{ color: "var(--color-text)" }}>
-        {value}
-      </span>
-      {sub && <span className="font-mono text-[10px]" style={{ color: "var(--color-success)" }}>{sub}</span>}
-    </div>
-  );
-}
+import StatCard from "@/components/admin/StatCard";
+import PushLogForm from "@/components/admin/PushLogForm";
 
 // ── Admin Page ─────────────────────────────────────────────────────────────
 
@@ -461,62 +432,4 @@ export default function AdminPage() {
   );
 }
 
-// ── Push Log Form ──────────────────────────────────────────────────────────
 
-function PushLogForm() {
-  const [msg, setMsg] = useState("");
-  const [level, setLevel] = useState("INFO");
-  const [sent, setSent] = useState(false);
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setSent(true);
-    setMsg("");
-    setTimeout(() => setSent(false), 3000);
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-lg">
-      <div>
-        <label className="block font-mono text-[10px] tracking-widest mb-1.5" style={{ color: "var(--color-cyan)" }}>
-          LEVEL
-        </label>
-        <select
-          value={level}
-          onChange={(e) => setLevel(e.target.value)}
-          className="px-3 py-2 rounded font-mono text-xs"
-          style={{
-            backgroundColor: "var(--color-bg)",
-            border: "1px solid var(--color-border)",
-            color: "var(--color-text)",
-          }}
-        >
-          {["INFO", "SUCCESS", "WARN", "ERROR", "DEBUG"].map((l) => (
-            <option key={l} value={l}>{l}</option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label className="block font-mono text-[10px] tracking-widest mb-1.5" style={{ color: "var(--color-cyan)" }}>
-          MESSAGE
-        </label>
-        <input
-          type="text"
-          value={msg}
-          onChange={(e) => setMsg(e.target.value)}
-          placeholder="System alert message..."
-          required
-          className="w-full px-3 py-2 rounded font-mono text-xs"
-          style={{
-            backgroundColor: "var(--color-bg)",
-            border: "1px solid var(--color-border)",
-            color: "var(--color-text)",
-          }}
-        />
-      </div>
-      <GlowButton type="submit" variant="primary" size="sm" id="admin-push-log-btn">
-        {sent ? "✓ Pushed" : "Push Log Entry"}
-      </GlowButton>
-    </form>
-  );
-}

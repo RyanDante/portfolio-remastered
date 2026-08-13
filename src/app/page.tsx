@@ -5,14 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import BootScreen from "@/components/ui/BootScreen";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import HeroSection from "@/components/sections/HeroSection";
-import ProjectsSection from "@/components/sections/ProjectsSection";
-import CapabilitiesSection from "@/components/sections/CapabilitiesSection";
-import ServicesSection from "@/components/sections/ServicesSection";
-import FAQSection from "@/components/sections/FAQSection";
-import TerminalSection from "@/components/sections/TerminalSection";
-import AboutSection from "@/components/sections/AboutSection";
-import FeedbackSection from "@/components/sections/FeedbackSection";
+import HeroSection from "@/components/sections/hero/HeroSection";
+import ProjectsSection from "@/components/sections/projects/ProjectsSection";
+import CapabilitiesSection from "@/components/sections/capabilities/CapabilitiesSection";
+import ServicesSection from "@/components/sections/services/ServicesSection";
+import FAQSection from "@/components/sections/faq/FAQSection";
+import TerminalSection from "@/components/sections/terminal/TerminalSection";
+import AboutSection from "@/components/sections/about/AboutSection";
+import FeedbackSection from "@/components/sections/feedback/FeedbackSection";
 
 export default function HomePage() {
   const [booted, setBooted] = useState(false);

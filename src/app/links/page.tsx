@@ -141,7 +141,7 @@ export default function LinksPage() {
               }}
             >
               <Image
-                src="/avatar.png"
+                src="/images/ryan1.JPG"
                 alt="Ryan Dante"
                 fill
                 priority

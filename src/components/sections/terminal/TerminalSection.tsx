@@ -3,7 +3,7 @@ import Terminal from "@/components/ui/Terminal";
 
 export default function TerminalSection() {
   return (
-    <SectionWrapper id="terminal" label="// 05 — TERMINAL">
+    <SectionWrapper id="terminal" label="// 06 — TERMINAL">
       <div className="mb-8">
         <h2
           className="text-3xl sm:text-4xl font-bold mb-3"

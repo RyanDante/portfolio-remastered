@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
+import { motion } from "framer-motion";
 import {
   GitBranch,
   Globe,
@@ -16,10 +15,12 @@ import {
 import SectionWrapper from "@/components/ui/SectionWrapper";
 import GlowButton from "@/components/ui/GlowButton";
 import { useTypingEffect } from "@/hooks/useTypingEffect";
+import ProfilePortrait from "./ProfilePortrait";
 
 const ROLES = [
   "Systems Architect",
   "Principal Engineer",
+  "Full-Stack Developer",
   "AI Integration Lead",
   "Security Specialist",
 ];
@@ -189,58 +190,8 @@ export default function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* ── RIGHT COLUMN: Studio Portrait Frame & Background Matrix Image ── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="lg:col-span-5 relative flex items-center justify-center"
-        >
-          {/* Background Matrix Picture Asset */}
-          <div className="absolute inset-x-0 -top-8 -bottom-8 rounded-3xl overflow-hidden opacity-45 pointer-events-none z-0">
-            <Image
-              src="/hero-bg.png"
-              alt="Cyberpunk Matrix Background"
-              fill
-              className="object-cover object-center filter blur-[1px] brightness-125"
-            />
-            <div className="absolute inset-0 bg-gradient-to-tr from-[#030303] via-transparent to-[#030303]" />
-          </div>
-
-          <div className="relative flex items-center z-10 my-4">
-            {/* Studio Portrait Frame */}
-            <div
-              className="relative w-full max-w-[360px] sm:max-w-[420px] aspect-[3/4] rounded-lg overflow-hidden glass border shadow-2xl"
-              style={{
-                borderColor: "var(--color-border)",
-                backgroundColor: "rgba(10, 10, 10, 0.85)",
-                boxShadow: "0 0 50px rgba(0,0,0,0.9), 0 0 30px rgba(0,255,194,0.15)",
-              }}
-            >
-              {/* Studio Portrait */}
-              <Image
-                src="/avatar.png"
-                alt="Ryan Dante — Principal Engineer"
-                fill
-                priority
-                className="object-cover object-center filter grayscale contrast-110 transition-all duration-500 hover:grayscale-0 hover:scale-105"
-              />
-
-              {/* Base Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-transparent opacity-80" />
-            </div>
-
-            {/* Vertical Outlined Typography Alongside the Portrait */}
-            <div
-              className="hidden sm:block absolute -right-12 top-1/2 -translate-y-1/2 pointer-events-none select-none writing-vertical z-20"
-              aria-hidden
-            >
-              <span className="font-mono font-black text-4xl lg:text-5xl tracking-[0.2em] text-stroke-cyan uppercase drop-shadow-2xl">
-                RYAN DANTE
-              </span>
-            </div>
-          </div>
-        </motion.div>
+        {/* ── RIGHT COLUMN: Profile Portrait Component ── */}
+        <ProfilePortrait imageSrc="/images/ryan2.PNG" />
       </div>
     </SectionWrapper>
   );

@@ -17,7 +17,6 @@ const INITIAL: Omit<FeedbackEntry, "id" | "timestamp" | "status"> = {
 };
 
 async function submitToFirestore(data: FeedbackEntry) {
-  // Dynamic import to avoid loading Firestore on server
   const { collection, addDoc, serverTimestamp } = await import("firebase/firestore");
   if (!db) throw new Error("Firestore not available");
   await addDoc(collection(db, "feedback"), {
@@ -80,7 +79,7 @@ export default function FeedbackSection() {
   };
 
   return (
-    <SectionWrapper id="feedback" label="// 07 — GUESTBOOK">
+    <SectionWrapper id="feedback" label="// 08 — GUESTBOOK & CONTACT">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         {/* Left — info */}
         <div>
@@ -95,8 +94,8 @@ export default function FeedbackSection() {
 
           <div className="space-y-4">
             {[
-              { label: "Response Time", value: "< 24 hours" },
-              { label: "Availability", value: "Open to contracts" },
+              { label: "Response Time", value: "< 12 hours guarantee" },
+              { label: "Availability", value: "Open to contracts & roles" },
               { label: "Location", value: "London, UK (remote OK)" },
               { label: "Email", value: "ryan@ryandante.dev" },
             ].map((item) => (
@@ -185,7 +184,7 @@ export default function FeedbackSection() {
                 name="message"
                 value={form.message}
                 onChange={handleChange}
-                placeholder="I saw your NeuralOS project and..."
+                placeholder="I saw your portfolio and would like to discuss..."
                 required
                 rows={5}
                 style={{ ...inputStyle, resize: "vertical" }}
