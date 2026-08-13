@@ -10,13 +10,14 @@ import ResumeModal from "@/components/ui/ResumeModal";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { href: "#home",     label: "Home",     num: "01" },
+  { href: "#home", label: "Home", num: "01" },
   { href: "#projects", label: "Projects", num: "02" },
-  { href: "#systems",  label: "Systems",  num: "03" },
-  { href: "#logs",     label: "Logs",     num: "04" },
-  { href: "#terminal", label: "Terminal", num: "05" },
-  { href: "#about",    label: "About",    num: "06" },
-  { href: "#feedback", label: "Contact",  num: "07" },
+  { href: "#systems", label: "Capabilities", num: "03" },
+  { href: "#logs", label: "Services", num: "04" },
+  { href: "#faq", label: "FAQ", num: "05" },
+  { href: "#terminal", label: "Terminal", num: "06" },
+  { href: "#about", label: "Experience", num: "07" },
+  { href: "#feedback", label: "Contact", num: "08" },
 ];
 
 const SECTION_IDS = NAV_LINKS.map((l) => l.href.slice(1));
@@ -146,41 +147,94 @@ export default function Navbar() {
           </div>
         </nav>
 
-        {/* Mobile Dropdown Drawer (md:hidden) */}
+        {/* Mobile Right-to-Left Off-Canvas Sliding Drawer (md:hidden) */}
         <AnimatePresence>
           {mobileOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="md:hidden overflow-hidden glass border-b border-white/10"
-            >
-              <div className="px-5 py-4 flex flex-col gap-2">
-                {NAV_LINKS.map((link) => {
-                  const isActive = activeId === link.href.slice(1);
-                  return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className="px-4 py-2.5 rounded font-mono text-sm flex items-center justify-between transition-colors"
-                      style={{
-                        color: isActive ? "var(--color-cyan)" : "#E0E0E0",
-                        backgroundColor: isActive ? "var(--color-cyan-faint)" : "rgba(10,10,10,0.5)",
-                        border: isActive ? "1px solid var(--color-cyan-glow)" : "1px solid var(--color-border)",
-                      }}
+            <div className="md:hidden fixed inset-0 z-50">
+              {/* Dark Backdrop Overlay */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setMobileOpen(false)}
+                className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+              />
+
+              {/* Right-to-Left Sliding Panel */}
+              <motion.aside
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", damping: 25, stiffness: 220 }}
+                className="fixed inset-y-0 right-0 w-80 max-w-[85vw] glass border-l border-white/10 p-6 flex flex-col justify-between z-10 shadow-2xl"
+                style={{ backgroundColor: "rgba(5, 5, 5, 0.96)" }}
+              >
+                <div>
+                  {/* Header */}
+                  <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
+                    <span className="font-mono font-bold text-sm text-[var(--color-cyan)] flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[var(--color-cyan)] animate-pulse" />
+                      RD://NAVIGATION
+                    </span>
+                    <button
                       onClick={() => setMobileOpen(false)}
+                      className="p-1.5 rounded glass text-[#888888] hover:text-white cursor-pointer"
+                      aria-label="Close menu"
                     >
-                      <span className="flex items-center gap-2">
-                        <span className="text-xs text-[#666]">{link.num}.</span>
-                        {link.label}
-                      </span>
-                      <ChevronRight size={14} className="text-[#666]" />
-                    </Link>
-                  );
-                })}
-              </div>
-            </motion.div>
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  {/* Links list */}
+                  <nav className="flex flex-col gap-2.5">
+                    {NAV_LINKS.map((link) => {
+                      const isActive = activeId === link.href.slice(1);
+                      return (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          className="px-4 py-3 rounded-xl font-mono text-sm flex items-center justify-between transition-all"
+                          style={{
+                            color: isActive ? "var(--color-cyan)" : "#E0E0E0",
+                            backgroundColor: isActive ? "var(--color-cyan-faint)" : "rgba(255,255,255,0.03)",
+                            border: isActive ? "1px solid var(--color-cyan-glow)" : "1px solid var(--color-border)",
+                          }}
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          <span className="flex items-center gap-3">
+                            <span className="text-xs text-[#666]">{link.num}.</span>
+                            {link.label}
+                          </span>
+                          <ChevronRight size={14} className={isActive ? "text-[var(--color-cyan)]" : "text-[#666]"} />
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+
+                {/* Bottom Actions inside drawer */}
+                <div className="pt-6 border-t border-white/10 space-y-3 font-mono text-xs">
+                  <Link
+                    href="/links"
+                    onClick={() => setMobileOpen(false)}
+                    className="w-full py-2.5 rounded-xl glass border border-[var(--color-cyan-glow)] flex items-center justify-center gap-2 text-[var(--color-cyan)] font-bold"
+                  >
+                    <Globe size={14} /> Open Bio Hub (/links)
+                  </Link>
+                  <GlowButton
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setMobileOpen(false);
+                      setResumeOpen(true);
+                    }}
+                    className="w-full justify-center text-xs py-2.5"
+                  >
+                    Download Resume PDF
+                  </GlowButton>
+                </div>
+              </motion.aside>
+            </div>
           )}
         </AnimatePresence>
       </header>

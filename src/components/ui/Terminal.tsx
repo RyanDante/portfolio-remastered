@@ -33,13 +33,18 @@ Example: ai what distributed systems have you built in Rust?
 
 const PROJECTS_TEXT = PROJECTS.map(
   (p) =>
-    `  [${p.status}] ${p.title.padEnd(18)} (${p.category.padEnd(12)}) — ${p.subtitle}`
+    `  [${p.status}] ${p.title.padEnd(18)} (${p.category.padEnd(12)}) — ${p.subtitle}`,
 ).join("\n");
 
 const SKILLS_TEXT = SKILLS.map(
   (cat) =>
     `  ${cat.category}:\n` +
-    cat.skills.map((s) => `    ${s.name.padEnd(24)} [${"█".repeat(Math.floor(s.level / 10))}${"░".repeat(10 - Math.floor(s.level / 10))}] ${s.level}%`).join("\n")
+    cat.skills
+      .map(
+        (s) =>
+          `    ${s.name.padEnd(24)} [${"█".repeat(Math.floor(s.level / 10))}${"░".repeat(10 - Math.floor(s.level / 10))}] ${s.level}%`,
+      )
+      .join("\n"),
 ).join("\n\n");
 
 const STATUS_TEXT = `
@@ -60,13 +65,16 @@ USER PROFILE: ryan@portfolio.dev
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Name          : Ryan Dante
   Role          : Principal Software Engineer & Systems Architect
-  Experience    : 7+ Years Production Systems
+  Experience    : 3+ Years Production Systems
   Specialties   : Distributed Systems, AI Kernels, Security & Cryptography
   Location      : London, UK (Remote Worldwide)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `.trim();
 
-function makeOutputLine(content: string, type: TerminalLine["type"] = "output"): TerminalLine {
+function makeOutputLine(
+  content: string,
+  type: TerminalLine["type"] = "output",
+): TerminalLine {
   return { id: genId(), type, content, timestamp: generateTimestamp() };
 }
 
@@ -75,8 +83,14 @@ function makeLine(line: string): TerminalLine {
 }
 
 const INITIAL_LINES: TerminalLine[] = [
-  makeOutputLine("Linux portfolio 6.8.0-rt1-portfolio #1 SMP PREEMPT_RT x86_64", "system"),
-  makeOutputLine("Type 'help' or 'ls' to list commands, 'ai <query>' to ask ARIA.", "system"),
+  makeOutputLine(
+    "Linux portfolio 6.8.0-rt1-portfolio #1 SMP PREEMPT_RT x86_64",
+    "system",
+  ),
+  makeOutputLine(
+    "Type 'help' or 'ls' to list commands, 'ai <query>' to ask ARIA.",
+    "system",
+  ),
   makeOutputLine("", "system"),
 ];
 
@@ -130,7 +144,11 @@ export default function Terminal() {
         pushLines(makeLine("PROJECTS INDEX:"), makeLine(PROJECTS_TEXT));
       } else if (lowerCmd === "skills" || lowerCmd === "cat") {
         pushLines(makeLine("SKILLS MATRIX:"), makeLine(SKILLS_TEXT));
-      } else if (lowerCmd === "status" || lowerCmd === "top" || lowerCmd === "ping") {
+      } else if (
+        lowerCmd === "status" ||
+        lowerCmd === "top" ||
+        lowerCmd === "ping"
+      ) {
         pushLines(makeLine(STATUS_TEXT));
       } else if (lowerCmd === "whoami" || lowerCmd === "about") {
         pushLines(makeLine(ABOUT_TEXT));
@@ -148,7 +166,9 @@ export default function Terminal() {
           pushLines(makeOutputLine("Usage: ai <your prompt>", "error"));
         } else {
           setIsLoading(true);
-          pushLines(makeOutputLine("ARIA > Processing AI request...", "system"));
+          pushLines(
+            makeOutputLine("ARIA > Processing AI request...", "system"),
+          );
           try {
             const res = await fetch("/api/gemini", {
               method: "POST",
@@ -156,7 +176,12 @@ export default function Terminal() {
               body: JSON.stringify({ prompt: arg }),
             });
             const data = await res.json();
-            pushLines(makeOutputLine(data.response ?? data.error ?? "[ARIA] No response.", "ai"));
+            pushLines(
+              makeOutputLine(
+                data.response ?? data.error ?? "[ARIA] No response.",
+                "ai",
+              ),
+            );
           } catch {
             pushLines(makeOutputLine("[ARIA] Connection failed.", "error"));
           } finally {
@@ -167,14 +192,14 @@ export default function Terminal() {
         pushLines(
           makeOutputLine(
             `zsh: command not found: ${cmd}. Type 'help' or 'ls' for commands.`,
-            "error"
-          )
+            "error",
+          ),
         );
       }
 
       pushLines(makeOutputLine("", "output"));
     },
-    [pushLines, clearLines, cmdHistory]
+    [pushLines, clearLines, cmdHistory],
   );
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
@@ -192,7 +217,9 @@ export default function Terminal() {
       e.preventDefault();
       setHistoryIdx((i) => {
         const next = Math.max(i - 1, -1);
-        setInput(next === -1 ? "" : cmdHistory[cmdHistory.length - 1 - next] ?? "");
+        setInput(
+          next === -1 ? "" : (cmdHistory[cmdHistory.length - 1 - next] ?? ""),
+        );
         return next;
       });
     }
@@ -200,11 +227,16 @@ export default function Terminal() {
 
   function getLineStyle(type: TerminalLine["type"]): React.CSSProperties {
     switch (type) {
-      case "input":   return { color: "var(--color-cyan)" };
-      case "error":   return { color: "var(--color-error)" };
-      case "system":  return { color: "#888888" };
-      case "ai":      return { color: "var(--color-success)" };
-      default:        return { color: "#E0E0E0" };
+      case "input":
+        return { color: "var(--color-cyan)" };
+      case "error":
+        return { color: "var(--color-error)" };
+      case "system":
+        return { color: "#888888" };
+      case "ai":
+        return { color: "var(--color-success)" };
+      default:
+        return { color: "#E0E0E0" };
     }
   }
 
@@ -218,9 +250,7 @@ export default function Terminal() {
       onClick={() => inputRef.current?.focus()}
     >
       {/* Title bar */}
-      <div
-        className="flex items-center gap-2 px-4 py-3 bg-[#0a0a0a] border-b border-white/10"
-      >
+      <div className="flex items-center gap-2 px-4 py-3 bg-[#0a0a0a] border-b border-white/10">
         <span className="w-3 h-3 rounded-full bg-red-500 opacity-80" />
         <span className="w-3 h-3 rounded-full bg-yellow-500 opacity-80" />
         <span className="w-3 h-3 rounded-full bg-green-500 opacity-80" />
@@ -235,12 +265,17 @@ export default function Terminal() {
       </div>
 
       {/* Output Container */}
-      <div ref={outputRef} className="h-96 overflow-y-auto p-4 font-mono text-xs leading-6">
+      <div
+        ref={outputRef}
+        className="h-96 overflow-y-auto p-4 font-mono text-xs leading-6"
+      >
         {lines.map((line) => (
           <div key={line.id} style={getLineStyle(line.type)}>
             {line.type === "input" ? (
               <span>
-                <span style={{ color: "var(--color-success)", fontWeight: "bold" }}>
+                <span
+                  style={{ color: "var(--color-success)", fontWeight: "bold" }}
+                >
                   {PROMPT_PREFIX}{" "}
                 </span>
                 {line.content}
@@ -272,7 +307,10 @@ export default function Terminal() {
           autoComplete="off"
           spellCheck={false}
         />
-        <span className="animate-cursor font-mono text-xs text-[var(--color-cyan)]" aria-hidden>
+        <span
+          className="animate-cursor font-mono text-xs text-[var(--color-cyan)]"
+          aria-hidden
+        >
           █
         </span>
       </div>

@@ -7,8 +7,9 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import HeroSection from "@/components/sections/HeroSection";
 import ProjectsSection from "@/components/sections/ProjectsSection";
-import SystemsSection from "@/components/sections/SystemsSection";
-import LogsSection from "@/components/sections/LogsSection";
+import CapabilitiesSection from "@/components/sections/CapabilitiesSection";
+import ServicesSection from "@/components/sections/ServicesSection";
+import FAQSection from "@/components/sections/FAQSection";
 import TerminalSection from "@/components/sections/TerminalSection";
 import AboutSection from "@/components/sections/AboutSection";
 import FeedbackSection from "@/components/sections/FeedbackSection";
@@ -35,8 +36,9 @@ export default function HomePage() {
             <main className="flex-1">
               <HeroSection />
               <ProjectsSection />
-              <SystemsSection />
-              <LogsSection />
+              <CapabilitiesSection />
+              <ServicesSection />
+              <FAQSection />
               <TerminalSection />
               <AboutSection />
               <FeedbackSection />

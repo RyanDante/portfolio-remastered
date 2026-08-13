@@ -16,9 +16,9 @@ const BOOT_LINES: string[] = [
   "SYSTEMS NOMINAL — BOOT SEQUENCE COMPLETE",
   "",
   "╔═══════════════════════════════════════════╗",
-  "║  RYAN DANTE // PRINCIPAL ENGINEER        ║",
-  "║  SYSTEM BUILD DLA VER 4.0.2              ║",
-  "║  ALL SYSTEMS ONLINE ■■■■■■■■■■■■■■■■■  ║",
+  "║  RYAN DANTE // PRINCIPAL ENGINEER         ║",
+  "║  SYSTEM BUILD DLA VER 4.0.2               ║",
+  "║  ALL SYSTEMS ONLINE ■■■■■■■■■■■■■■■■■     ║",
   "╚═══════════════════════════════════════════╝",
 ];
 
@@ -125,7 +125,10 @@ export default function BootScreen({ onComplete }: BootScreenProps) {
                 /dev/boot0 — SYSTEM INIT
               </span>
             </div>
-            <span className="font-mono text-[10px] opacity-60" style={{ color: "var(--color-cyan)" }}>
+            <span
+              className="font-mono text-[10px] opacity-60"
+              style={{ color: "var(--color-cyan)" }}
+            >
               [Click to skip]
             </span>
           </div>
@@ -154,10 +157,10 @@ export default function BootScreen({ onComplete }: BootScreenProps) {
                       color: isBorder
                         ? "var(--color-cyan)"
                         : isOk
-                        ? "var(--color-success)"
-                        : text === ""
-                        ? "transparent"
-                        : "var(--color-text)",
+                          ? "var(--color-success)"
+                          : text === ""
+                            ? "transparent"
+                            : "var(--color-text)",
                     }}
                   >
                     {text || "\u00A0"}

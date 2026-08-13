@@ -35,23 +35,16 @@ const FULL_BIO =
   "A personal portfolio showcasing production distributed systems, AI-powered inference kernels, post-quantum secrets vaults, and high-performance cloud architecture developed over 7+ years of engineering excellence across high-throughput enterprise scale environments.";
 
 export default function HeroSection() {
-  const [roleIdx, setRoleIdx] = useState(0);
   const [isBioExpanded, setIsBioExpanded] = useState(false);
 
-  // Typewriter effect for name
-  const typedName = useTypingEffect({
-    strings: ["Ryan Dante"],
-    typingSpeed: 100,
-    loop: false,
+  // Typewriter effect for roles
+  const typedRole = useTypingEffect({
+    strings: ROLES,
+    typingSpeed: 70,
+    deletingSpeed: 40,
+    pauseDuration: 2200,
+    loop: true,
   });
-
-  // Cyclic smooth role transition
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setRoleIdx((prev) => (prev + 1) % ROLES.length);
-    }, 3200);
-    return () => clearInterval(timer);
-  }, []);
 
   return (
     <SectionWrapper id="home" className="min-h-screen flex flex-col justify-center pt-24 pb-16">
@@ -79,51 +72,36 @@ export default function HeroSection() {
               }}
             >
               <Sparkles size={13} className="animate-spin-slow" />
-              // WELCOME TO MY WORLD
+              // WELCOME TO MY PORTFOLIO
             </span>
           </motion.div>
 
-          {/* Main Headline Line 1: Typewriter Name */}
+          {/* Main Headline Line 1: Static Name */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-black tracking-tight leading-[1.05] text-white mb-2"
           >
-            I&apos;m{" "}
-            <span className="text-white relative">
-              {typedName}
-              <span className="animate-cursor font-mono text-4xl sm:text-6xl text-[var(--color-cyan)]">
-                _
-              </span>
-            </span>
+            I&apos;m <span className="text-[var(--color-cyan)] text-glow">Ryan Dante</span>
           </motion.h1>
 
-          {/* Animated Subheadline Role Switcher */}
+          {/* Animated Subheadline Role Typewriter */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.35, duration: 0.5 }}
-            className="flex items-center gap-3 mb-6 h-20 overflow-hidden"
+            className="flex items-center gap-3 mb-6 min-h-[4rem]"
           >
-            <span className="text-4xl sm:text-5xl lg:text-6xl font-black text-white shrink-0">
+            <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-white shrink-0">
               A
             </span>
-            <div className="relative h-full flex items-center overflow-hidden">
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={roleIdx}
-                  initial={{ y: 28, opacity: 0, filter: "blur(6px)" }}
-                  animate={{ y: 0, opacity: 1, filter: "blur(0px)" }}
-                  exit={{ y: -28, opacity: 0, filter: "blur(6px)" }}
-                  transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-                  className="inline-block text-[var(--color-cyan)] text-glow font-black text-4xl sm:text-5xl lg:text-6xl whitespace-nowrap"
-                  style={{ color: "var(--color-cyan)" }}
-                >
-                  {ROLES[roleIdx]}
-                </motion.span>
-              </AnimatePresence>
-            </div>
+            <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[var(--color-cyan)] text-glow font-mono relative">
+              {typedRole}
+              <span className="animate-cursor font-mono text-3xl sm:text-5xl text-[var(--color-cyan)]">
+                _
+              </span>
+            </span>
           </motion.div>
 
           {/* Truncated Bio Description with Show More / Show Less Toggle */}
@@ -191,19 +169,20 @@ export default function HeroSection() {
             className="flex flex-col sm:flex-row items-start sm:items-center gap-4 pt-6 border-t border-[var(--color-border)] w-full max-w-xl"
           >
             <span className="font-mono text-xs font-bold tracking-widest text-[#888888] uppercase">
-              Find me on
+              Find me on:
             </span>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 flex-wrap">
               {SOCIAL_LINKS.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   target={link.href.startsWith("http") ? "_blank" : undefined}
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded glass border border-[var(--color-border)] flex items-center justify-center text-white transition-all duration-200 hover:border-[var(--color-cyan)] hover:text-[var(--color-cyan)] hover:scale-110"
+                  className="px-3 py-2 rounded-lg glass border border-[var(--color-border)] flex items-center gap-2 text-xs font-mono text-white transition-all duration-200 hover:border-[var(--color-cyan)] hover:text-[var(--color-cyan)] hover:scale-105 cursor-pointer"
                   aria-label={link.label}
                 >
-                  <link.icon size={18} />
+                  <link.icon size={15} />
+                  <span>{link.label}</span>
                 </a>
               ))}
             </div>

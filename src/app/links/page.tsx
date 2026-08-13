@@ -72,10 +72,12 @@ export default function LinksPage() {
 
   function handleShare() {
     if (navigator.share) {
-      navigator.share({
-        title: "Ryan Dante — Link Tree & Engineering Hub",
-        url: window.location.href,
-      }).catch(() => {});
+      navigator
+        .share({
+          title: "Ryan Dante — Link Tree & Engineering Hub",
+          url: window.location.href,
+        })
+        .catch(() => {});
     } else {
       navigator.clipboard.writeText(window.location.href);
       setCopiedLink(true);
@@ -113,7 +115,11 @@ export default function LinksPage() {
             onClick={handleShare}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded glass border border-white/10 text-white hover:border-[var(--color-cyan)] transition-all cursor-pointer"
           >
-            {copiedLink ? <Check size={14} className="text-[var(--color-cyan)]" /> : <Share2 size={14} />}
+            {copiedLink ? (
+              <Check size={14} className="text-[var(--color-cyan)]" />
+            ) : (
+              <Share2 size={14} />
+            )}
             <span>{copiedLink ? "Copied Link!" : "Share Bio"}</span>
           </button>
         </div>
@@ -151,7 +157,8 @@ export default function LinksPage() {
           </div>
 
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded font-mono text-[10px] font-bold uppercase tracking-widest mb-2"
+            <div
+              className="inline-flex items-center gap-2 px-3 py-1 rounded font-mono text-[10px] font-bold uppercase tracking-widest mb-2"
               style={{
                 color: "var(--color-cyan)",
                 backgroundColor: "var(--color-cyan-faint)",
@@ -159,7 +166,7 @@ export default function LinksPage() {
               }}
             >
               <span className="w-2 h-2 rounded-full bg-[var(--color-cyan)] animate-pulse" />
-              // ONLINE NODE — LONDON EDGE POP
+              <p></p> // ONLINE NODE — LONDON EDGE POP
             </div>
 
             <h1 className="text-3xl font-black text-white tracking-tight">
@@ -169,7 +176,8 @@ export default function LinksPage() {
               Principal Software Engineer & Systems Architect
             </p>
             <p className="text-xs text-[#AAAAAA] max-w-md mt-2 leading-relaxed">
-              Building high-throughput distributed systems, post-quantum secrets vaults, and production AI kernels.
+              Building high-throughput distributed systems, post-quantum secrets
+              vaults, and production AI kernels.
             </p>
           </div>
         </motion.div>
@@ -264,7 +272,8 @@ export default function LinksPage() {
           className="w-full"
         >
           <h2 className="font-mono text-xs tracking-widest text-[#888888] uppercase mb-3 flex items-center gap-2 font-bold">
-            <Layers size={12} className="text-[var(--color-cyan)]" /> Featured Production Systems
+            <Layers size={12} className="text-[var(--color-cyan)]" /> Featured
+            Production Systems
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
             {PROJECTS.slice(0, 3).map((p) => (
@@ -300,7 +309,7 @@ export default function LinksPage() {
             variant="primary"
             size="lg"
             className="w-full justify-center rounded-xl py-4 font-mono font-bold text-sm"
-            onClick={() => window.location.href = "/"}
+            onClick={() => (window.location.href = "/")}
             icon={<ArrowRight size={16} />}
             id="links-launch-full-portfolio-btn"
           >

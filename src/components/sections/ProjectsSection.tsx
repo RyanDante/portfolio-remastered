@@ -329,14 +329,31 @@ export default function ProjectsSection() {
   const [selected, setSelected] = useState<Project | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<typeof CATEGORIES[number]>("ALL");
+  const [selectedTech, setSelectedTech] = useState<string>("ALL");
   const [maxDisplay, setMaxDisplay] = useState(6);
 
-  // Filter projects by search query and category
+  // Extract all unique tech stack & tags dynamically from active projects
+  const availableTech = useMemo(() => {
+    const set = new Set<string>();
+    PROJECTS.forEach((p) => {
+      if (!p.archived) {
+        p.stack.forEach((s) => set.add(s));
+        p.tags.forEach((t) => set.add(t));
+      }
+    });
+    return Array.from(set).sort();
+  }, []);
+
+  // Filter projects by search query, category, and tech stack
   const filteredProjects = useMemo(() => {
     return PROJECTS.filter((p) => {
       if (p.archived) return false;
       const matchesCategory =
         selectedCategory === "ALL" || p.category === selectedCategory;
+      const matchesTech =
+        selectedTech === "ALL" ||
+        p.stack.includes(selectedTech) ||
+        p.tags.includes(selectedTech);
       const query = searchQuery.toLowerCase();
       const matchesSearch =
         !query ||
@@ -345,9 +362,9 @@ export default function ProjectsSection() {
         p.description.toLowerCase().includes(query) ||
         p.stack.some((s) => s.toLowerCase().includes(query)) ||
         p.tags.some((t) => t.toLowerCase().includes(query));
-      return matchesCategory && matchesSearch;
+      return matchesCategory && matchesTech && matchesSearch;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, selectedTech]);
 
   const visibleProjects = filteredProjects.slice(0, maxDisplay);
 
@@ -368,11 +385,11 @@ export default function ProjectsSection() {
         <ReviewMarquee />
 
         {/* Search Bar & Category Filter Bar */}
-        <div className="mb-8 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+        <div className="mb-6 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
           {/* Category Filter Pills */}
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="font-mono text-xs text-[#888888] mr-1 flex items-center gap-1">
-              <Filter size={12} /> Filter:
+              <Filter size={12} /> Domain:
             </span>
             {CATEGORIES.map((cat) => (
               <button
@@ -406,6 +423,51 @@ export default function ProjectsSection() {
               aria-label="Search projects"
             />
           </div>
+        </div>
+
+        {/* Tech Stack & Language Filter Pills Bar */}
+        <div className="mb-8 p-3 rounded-xl glass border border-white/10 flex items-center gap-2 flex-wrap">
+          <span className="font-mono text-[10px] text-[var(--color-cyan)] uppercase font-bold flex items-center gap-1 shrink-0">
+            <Cpu size={12} /> Tech Stack:
+          </span>
+          <button
+            onClick={() => setSelectedTech("ALL")}
+            className={`font-mono text-[10px] px-2.5 py-1 rounded transition-all cursor-pointer ${
+              selectedTech === "ALL"
+                ? "bg-[var(--color-cyan-faint)] text-[var(--color-cyan)] border border-[var(--color-cyan-glow)] font-bold"
+                : "bg-white/5 text-[#888888] hover:text-white"
+            }`}
+          >
+            All Stack
+          </button>
+          {availableTech.map((tech) => (
+            <button
+              key={tech}
+              onClick={() => {
+                setSelectedTech(tech);
+                setMaxDisplay(6);
+              }}
+              className={`font-mono text-[10px] px-2.5 py-1 rounded transition-all cursor-pointer ${
+                selectedTech === tech
+                  ? "bg-[var(--color-cyan-faint)] text-[var(--color-cyan)] border border-[var(--color-cyan-glow)] font-bold"
+                  : "bg-white/5 text-[#888888] hover:text-white border border-transparent"
+              }`}
+            >
+              {tech}
+            </button>
+          ))}
+          {(selectedTech !== "ALL" || selectedCategory !== "ALL" || searchQuery) && (
+            <button
+              onClick={() => {
+                setSelectedTech("ALL");
+                setSelectedCategory("ALL");
+                setSearchQuery("");
+              }}
+              className="ml-auto font-mono text-[10px] text-[var(--color-warn)] underline cursor-pointer"
+            >
+              Reset Filters
+            </button>
+          )}
         </div>
 
         {/* Projects Grid (Max 6 Paginated) */}

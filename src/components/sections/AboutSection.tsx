@@ -278,12 +278,15 @@ function SkillsMatrix() {
 
 export default function AboutSection() {
   return (
-    <SectionWrapper id="about" label="// 06 — ABOUT & ARCHITECTURE">
+    <SectionWrapper id="about" label="// 06 — EXPERIENCE & CAREER">
       <div className="mb-12">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-3 text-white">
-          About{" "}
-          <span style={{ color: "var(--color-cyan)" }}>& Engineering Principles</span>
+          Career Experience{" "}
+          <span style={{ color: "var(--color-cyan)" }}>& Web Architecture</span>
         </h2>
+        <p className="max-w-xl text-sm sm:text-base text-[#AAAAAA]">
+          A timeline of my engineering leadership, production impact, verified certifications, and core software principles.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
