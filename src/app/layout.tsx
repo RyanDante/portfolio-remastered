@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import CommandPalette from "@/components/ui/CommandPalette";
+import { SITE } from "@/data/site";
 
 // ── Fonts ──────────────────────────────────────────────────────────────────
 const outfit = Outfit({
@@ -46,11 +47,13 @@ export const metadata: Metadata = {
     description:
       "Cyberpunk-themed portfolio of a Principal Software Engineer building distributed systems, AI tools, and security-first products.",
     siteName: "Ryan Dante Portfolio",
+    images: [{ url: SITE.images.ogImage, width: 1200, height: 630, alt: "Ryan Dante" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Ryan Dante — Principal Engineer",
     description: "Principal SE portfolio — distributed systems, AI, security.",
+    images: [SITE.images.ogImage],
   },
   robots: {
     index: true,

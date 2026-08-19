@@ -40,10 +40,9 @@ export default function Footer() {
                 { href: "#home", label: "Home" },
                 { href: "#projects", label: "Projects" },
                 { href: "#systems", label: "Systems" },
-                { href: "#telemetry", label: "Telemetry" },
                 { href: "#terminal", label: "Terminal" },
                 { href: "#about", label: "About" },
-                { href: "#contact", label: "Contact" },
+                { href: "#feedback", label: "Contact" },
               ].map((l) => (
                 <Link
                   key={l.href}

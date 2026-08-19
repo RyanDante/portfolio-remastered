@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useTheme, THEMES, type ThemePalette } from "@/context/ThemeContext";
 import { PROJECTS } from "@/data/projects";
+import { SITE } from "@/data/site";
 import GlowButton from "@/components/ui/GlowButton";
 
 const MAIN_LINKS = [
@@ -90,16 +91,16 @@ export default function LinksPage() {
       className="min-h-screen flex flex-col items-center justify-between py-12 px-4 relative z-10"
       style={{ backgroundColor: "var(--color-bg)" }}
     >
-      {/* Background Matrix Frame */}
-      <div className="fixed inset-0 pointer-events-none opacity-20 z-0 overflow-hidden">
-        <Image
-          src="/hero-bg.png"
-          alt="Cyberpunk Matrix Ambient"
-          fill
-          className="object-cover object-center filter blur-[2px]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#030303] via-transparent to-[#030303]" />
-      </div>
+      {/* Ambient gradient background */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
+        aria-hidden
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 50% 0%, var(--color-cyan-glow) 0%, transparent 50%), radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0,255,194,0.08) 0%, transparent 50%)",
+          opacity: 0.4,
+        }}
+      />
 
       <main className="w-full max-w-xl flex flex-col items-center z-10 space-y-8">
         {/* Top Header Actions Bar */}
@@ -141,10 +142,11 @@ export default function LinksPage() {
               }}
             >
               <Image
-                src="/images/ryan1.JPG"
+                src={SITE.images.bioHubAvatar}
                 alt="Ryan Dante"
                 fill
                 priority
+                sizes="112px"
                 className="object-cover object-center filter contrast-110"
               />
             </div>
@@ -166,7 +168,7 @@ export default function LinksPage() {
               }}
             >
               <span className="w-2 h-2 rounded-full bg-[var(--color-cyan)] animate-pulse" />
-              <p></p> // ONLINE NODE — LONDON EDGE POP
+              // ONLINE NODE — LONDON EDGE POP
             </div>
 
             <h1 className="text-3xl font-black text-white tracking-tight">
@@ -223,34 +225,28 @@ export default function LinksPage() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="w-full space-y-3"
         >
-          {MAIN_LINKS.map((link, i) => {
+          {MAIN_LINKS.map((link) => {
             const Icon = link.icon;
-            return (
-              <motion.a
-                key={link.id}
-                href={link.url}
-                target={link.url.startsWith("http") ? "_blank" : undefined}
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.02, x: 4 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full glass rounded-xl p-4 border border-[var(--color-border)] hover:border-[var(--color-cyan-glow)] transition-all flex items-center justify-between group cursor-pointer"
-                style={{ backgroundColor: "rgba(10, 10, 10, 0.85)" }}
-              >
-                <div className="flex items-center gap-3.5">
+            const isExternal = link.url.startsWith("http");
+            const linkClass =
+              "w-full glass rounded-xl p-4 border border-[var(--color-border)] hover:border-[var(--color-cyan-glow)] transition-all flex items-center justify-between group cursor-pointer";
+            const linkStyle = { backgroundColor: "rgba(10, 10, 10, 0.85)" };
+            const linkContent = (
+              <>
+                <div className="flex items-center gap-3.5 min-w-0">
                   <div className="w-10 h-10 rounded-lg bg-[var(--color-cyan-faint)] border border-[var(--color-cyan-glow)] flex items-center justify-center text-[var(--color-cyan)] shrink-0">
                     <Icon size={18} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="text-sm font-bold text-white group-hover:text-[var(--color-cyan)] transition-colors">
                       {link.title}
                     </h3>
-                    <p className="text-[11px] text-[#888888] font-mono mt-0.5">
+                    <p className="text-[11px] text-[#888888] font-mono mt-0.5 line-clamp-2">
                       {link.subtitle}
                     </p>
                   </div>
                 </div>
-
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 shrink-0 ml-2">
                   <span className="font-mono text-[9px] px-2 py-0.5 rounded bg-white/5 text-[#888888] font-bold">
                     {link.badge}
                   </span>
@@ -259,7 +255,36 @@ export default function LinksPage() {
                     className="text-[#666666] group-hover:text-[var(--color-cyan)] group-hover:translate-x-1 transition-all"
                   />
                 </div>
-              </motion.a>
+              </>
+            );
+
+            if (isExternal) {
+              return (
+                <motion.a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  whileHover={{ scale: 1.02, x: 4 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={linkClass}
+                  style={linkStyle}
+                >
+                  {linkContent}
+                </motion.a>
+              );
+            }
+
+            return (
+              <motion.div
+                key={link.id}
+                whileHover={{ scale: 1.02, x: 4 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Link href={link.url} className={linkClass} style={linkStyle}>
+                  {linkContent}
+                </Link>
+              </motion.div>
             );
           })}
         </motion.div>
@@ -305,16 +330,17 @@ export default function LinksPage() {
           transition={{ delay: 0.4, duration: 0.5 }}
           className="w-full pt-4"
         >
-          <GlowButton
-            variant="primary"
-            size="lg"
-            className="w-full justify-center rounded-xl py-4 font-mono font-bold text-sm"
-            onClick={() => (window.location.href = "/")}
-            icon={<ArrowRight size={16} />}
-            id="links-launch-full-portfolio-btn"
-          >
-            Launch Full 3D Cyberpunk Portfolio
-          </GlowButton>
+          <Link href="/" className="block w-full">
+            <GlowButton
+              variant="primary"
+              size="lg"
+              className="w-full justify-center rounded-xl py-4 font-mono font-bold text-sm"
+              icon={<ArrowRight size={16} />}
+              id="links-launch-full-portfolio-btn"
+            >
+              Launch Full Portfolio
+            </GlowButton>
+          </Link>
         </motion.div>
       </main>
 

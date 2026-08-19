@@ -189,7 +189,7 @@ export default function CapabilitiesSection() {
               <Briefcase size={22} className="text-[var(--color-cyan)]" /> Ready to Scale Your Team
             </h3>
             <p className="text-xs sm:text-sm text-[#CCCCCC] max-w-xl leading-relaxed">
-              Targeting Principal Systems Architect, Lead Full-Stack Engineer, or Technical Co-founder roles. Available Remote Worldwide or Hybrid in London, UK.
+              Targeting Principal Systems Architect, Lead Full-Stack Engineer, or Technical Co-founder roles. Available Remote Worldwide or Hybrid in Cameroon.
             </p>
           </div>
 

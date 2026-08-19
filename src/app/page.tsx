@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import BootScreen from "@/components/ui/BootScreen";
 import Navbar from "@/components/layout/Navbar";
@@ -15,18 +15,38 @@ import AboutSection from "@/components/sections/about/AboutSection";
 import FeedbackSection from "@/components/sections/feedback/FeedbackSection";
 
 export default function HomePage() {
+  const [showBoot, setShowBoot] = useState(true);
   const [booted, setBooted] = useState(false);
-  const handleBoot = useCallback(() => setBooted(true), []);
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("has_booted") === "true") {
+        setShowBoot(false);
+        setBooted(true);
+      }
+    } catch {
+      /* sessionStorage unavailable */
+    }
+  }, []);
+
+  const handleBootComplete = useCallback(() => {
+    setShowBoot(false);
+  }, []);
+
+  const handleBootExitComplete = useCallback(() => {
+    setBooted(true);
+  }, []);
 
   return (
     <>
-      {/* Boot animation */}
-      <BootScreen onComplete={handleBoot} />
+      <AnimatePresence onExitComplete={handleBootExitComplete}>
+        {showBoot && <BootScreen key="boot" onComplete={handleBootComplete} />}
+      </AnimatePresence>
 
-      {/* Main app — fades in after boot */}
       <AnimatePresence>
         {booted && (
           <motion.div
+            key="main"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}

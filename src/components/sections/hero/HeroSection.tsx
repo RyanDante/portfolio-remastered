@@ -16,6 +16,7 @@ import SectionWrapper from "@/components/ui/SectionWrapper";
 import GlowButton from "@/components/ui/GlowButton";
 import { useTypingEffect } from "@/hooks/useTypingEffect";
 import ProfilePortrait from "./ProfilePortrait";
+import { SITE } from "@/data/site";
 
 const ROLES = [
   "Systems Architect",
@@ -29,7 +30,7 @@ const SOCIAL_LINKS = [
   { icon: GitBranch,    href: "https://github.com/ryandante",   label: "GitHub" },
   { icon: Globe,        href: "https://linkedin.com/in/ryandante", label: "LinkedIn" },
   { icon: TerminalIcon, href: "#terminal",                     label: "Terminal" },
-  { icon: Mail,         href: "#contact",                      label: "Contact" },
+  { icon: Mail,         href: "#feedback",                     label: "Contact" },
 ];
 
 const FULL_BIO =
@@ -191,7 +192,7 @@ export default function HeroSection() {
         </motion.div>
 
         {/* ── RIGHT COLUMN: Profile Portrait Component ── */}
-        <ProfilePortrait imageSrc="/images/ryan2.PNG" />
+        <ProfilePortrait imageSrc={SITE.images.heroPortrait} />
       </div>
     </SectionWrapper>
   );

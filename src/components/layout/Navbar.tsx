@@ -217,6 +217,12 @@ export default function Navbar() {
         </div>
 
         <div className="pt-6 border-t border-white/10 flex flex-col gap-3">
+          <Link
+            href="/links"
+            className="w-full py-2.5 rounded-xl glass border border-[var(--color-cyan-glow)] flex items-center justify-center gap-2 font-mono text-xs text-[var(--color-cyan)] font-bold hover:bg-[var(--color-cyan-faint)] transition-all"
+          >
+            <Globe size={14} /> Bio Hub
+          </Link>
           <GlowButton
             variant="outline"
             size="sm"
